@@ -59,17 +59,29 @@
       "name": "Search",
       "items": [
         {
-          "name": "Apple Music Search",
-          "desc": "Search Apple Music",
-          "path": "/search/applemusic?query=",
-          "status": "ready",
-          "params": {
-            "query": "Search query",
-            "region": "Region code"
-          }
-        }
-      ]
+  "name": "Search",
+  "items": [
+    {
+      "name": "Apple Music Search",
+      "desc": "Search Apple Music",
+      "path": "/search/applemusic?query=",
+      "status": "ready",
+      "params": {
+        "query": "Search query",
+        "region": "Region code"
+      }
     },
+    {
+      "name": "YouTube Search",
+      "desc": "Search YouTube videos",
+      "path": "/search/youtubesearch?query=",
+      "status": "ready",
+      "params": {
+        "query": "Search query"
+      }
+    }
+  ]
+},
     {
       "name": "Downloader",
       "items": [
