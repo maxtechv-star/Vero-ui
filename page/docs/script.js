@@ -1,3 +1,4 @@
+// contents of script.js
 document.addEventListener("DOMContentLoaded", async () => {
   const DOM = {
     loadingScreen: document.getElementById("loadingScreen"),
@@ -575,42 +576,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.addEventListener("click", closeSideNavOnClickOutside)
   }
 
-  const hideLoadingScreen = () => {
-    if (!DOM.loadingScreen) return
-    const loadingDots = DOM.loadingScreen.querySelector(".loading-dots")
-    if (loadingDots && loadingDots.intervalId) clearInterval(loadingDots.intervalId)
-
-    DOM.loadingScreen.classList.add("fade-out")
-    setTimeout(() => {
-      DOM.loadingScreen.style.display = "none"
-      DOM.body.classList.remove("no-scroll")
-    }, 150)
+  // animateLoadingDots: keeps the loading dots animating
+  const animateLoadingDots = () => {
+    const loadingDots = document.querySelector('.loading-dots');
+    if (loadingDots) {
+      loadingDots.intervalId = setInterval(() => {
+        if (loadingDots.textContent.length >= 3) {
+          loadingDots.textContent = '.';
+        } else {
+          loadingDots.textContent += '.';
+        }
+      }, 500);
+    }
   }
 
-  const animateLoadingDots = () => {
-  const loadingDots = document.querySelector('.loading-dots');
-  if (loadingDots) {
-    loadingDots.intervalId = setInterval(() => {
-      if (loadingDots.textContent.length >= 3) {
-        loadingDots.textContent = '.';
-      } else {
-        loadingDots.textContent += '.';
-      }
+  // single hideLoadingScreen implementation (removed duplicate)
+  const hideLoadingScreen = () => {
+    if (!DOM.loadingScreen) return;
+    const loadingDots = DOM.loadingScreen.querySelector('.loading-dots');
+    if (loadingDots && loadingDots.intervalId) clearInterval(loadingDots.intervalId);
+
+    DOM.loadingScreen.classList.add('fade-out');
+    setTimeout(() => {
+      DOM.loadingScreen.style.display = 'none';
+      DOM.body.classList.remove('no-scroll');
     }, 500);
   }
-}
 
-const hideLoadingScreen = () => {
-  if (!DOM.loadingScreen) return;
-  const loadingDots = DOM.loadingScreen.querySelector('.loading-dots');
-  if (loadingDots && loadingDots.intervalId) clearInterval(loadingDots.intervalId);
-
-  DOM.loadingScreen.classList.add('fade-out');
-  setTimeout(() => {
-    DOM.loadingScreen.style.display = 'none';
-    DOM.body.classList.remove('no-scroll');
-  }, 500);
-}
   animateLoadingDots()
 
   const initTheme = () => {
