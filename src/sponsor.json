@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "title": "Sponsored Ads",
+  "subtitle": "Thanks for Using Veron Api's",
+  "showOnLoad": true,
+  "showInterval": 300000,
+  "sponsors": [
+    {
+      "id": "vgxteam",
+      "name": "VeronDev",
+      "logo": "",
+      "backgroundColor": "#1a1a1a",
+      "textColor": "#ffffff",
+      "bannerImage": "/src/images/banner.jpg",
+      "url": "https://whatsapp.com/channel/0029Vb57ZHh7IUYcNttXEB3y",
+      "active": true
+    }
+  ]
+}
