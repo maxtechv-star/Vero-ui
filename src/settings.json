@@ -37,65 +37,35 @@
       "items": [
         {
           "name": "LuminAI",
-          "desc": "Advanced AI assistant powered by LuminAI for intelligent conversations",
+          "desc": "AI assistant for conversations",
           "path": "/ai/luminai?text=",
           "status": "error",
           "params": {
-            "text": "Text message for the AI to respond to"
+            "text": "Message for AI"
           }
         },
         {
           "name": "Image to Prompt",
-          "desc": "Convert images to AI prompts using NeuralFrames technology",
+          "desc": "Convert images to AI prompts",
           "path": "/ai/imgprompt?imageUrl=",
           "status": "ready",
           "params": {
-            "imageUrl": "URL of the image to convert to prompt (required)"
-          },
-          "innerDesc": "This API converts images to descriptive AI prompts."
+            "imageUrl": "Image URL"
+          }
         }
       ]
     },
     {
-      "name": "Anime",
+      "name": "Search",
       "items": [
         {
-          "name": "Anichin Popular",
-          "desc": "Get popular anime list from Anichin",
-          "path": "/anime/anichin-popular",
-          "status": "ready"
-        },
-        {
-          "name": "Anichin Latest",
-          "desc": "Get latest anime episodes from Anichin",
-          "path": "/anime/anichin-latest",
-          "status": "ready"
-        },
-        {
-          "name": "Anichin Search",
-          "desc": "Search for anime on Anichin",
-          "path": "/anime/anichin-search?query=",
+          "name": "Apple Music Search",
+          "desc": "Search Apple Music",
+          "path": "/search/applemusic?query=",
           "status": "ready",
           "params": {
-            "query": "Anime title to search for (required)"
-          }
-        },
-        {
-          "name": "Anichin Detail",
-          "desc": "Get detailed information about specific anime",
-          "path": "/anime/anichin-detail?url=",
-          "status": "ready",
-          "params": {
-            "url": "Anichin anime detail URL (required)"
-          }
-        },
-        {
-          "name": "Anichin Episode",
-          "desc": "Get episode list for specific anime",
-          "path": "/anime/anichin-episode?url=",
-          "status": "ready",
-          "params": {
-            "url": "Anichin anime URL (required)"
+            "query": "Search query",
+            "region": "Region code"
           }
         }
       ]
@@ -104,48 +74,103 @@
       "name": "Downloader",
       "items": [
         {
+          "name": "YouTube Audio",
+          "desc": "Download YouTube audio",
+          "path": "/downloader/youtube/audio?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube URL",
+            "quality": "highest/lowest"
+          }
+        },
+        {
+          "name": "YouTube Video",
+          "desc": "Download YouTube video",
+          "path": "/downloader/youtube/video?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube URL",
+            "quality": "highest/lowest"
+          }
+        },
+        {
           "name": "TikTok Downloader",
-          "desc": "Download TikTok videos and photos with metadata",
+          "desc": "Download TikTok videos",
           "path": "/downloader/tiktok?url=",
           "status": "ready",
           "params": {
-            "url": "TikTok video URL (required)"
+            "url": "TikTok URL"
           }
         },
         {
           "name": "Instagram Downloader",
-          "desc": "Download Instagram posts, reels, and stories",
+          "desc": "Download Instagram posts",
           "path": "/downloader/instagram?url=",
           "status": "ready",
           "params": {
-            "url": "Instagram post/Reel/Story URL (required)"
-          }
-        },
-        {
-          "name": "YouTube Downloader",
-          "desc": "Download YouTube community posts with images",
-          "path": "/downloader/youtube?url=",
-          "status": "ready",
-          "params": {
-            "url": "YouTube community post URL (required)"
+            "url": "Instagram URL"
           }
         },
         {
           "name": "Facebook Downloader",
-          "desc": "Download Facebook videos with multiple quality options",
+          "desc": "Download Facebook videos",
           "path": "/downloader/facebook?url=",
           "status": "ready",
           "params": {
-            "url": "Facebook video URL (required)"
+            "url": "Facebook URL"
           }
         },
         {
           "name": "Spotify Downloader",
-          "desc": "Download Spotify tracks as MP3 files",
+          "desc": "Download Spotify tracks",
           "path": "/downloader/spotify?url=",
           "status": "ready",
           "params": {
-            "url": "Spotify track/album URL (required)"
+            "url": "Spotify URL"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Anime",
+      "items": [
+        {
+          "name": "Anichin Popular",
+          "desc": "Popular anime list",
+          "path": "/anime/anichin-popular",
+          "status": "ready"
+        },
+        {
+          "name": "Anichin Latest",
+          "desc": "Latest anime episodes",
+          "path": "/anime/anichin-latest",
+          "status": "ready"
+        },
+        {
+          "name": "Anichin Search",
+          "desc": "Search anime",
+          "path": "/anime/anichin-search?query=",
+          "status": "ready",
+          "params": {
+            "query": "Anime title"
+          }
+        },
+        {
+          "name": "Anichin Detail",
+          "desc": "Anime details",
+          "path": "/anime/anichin-detail?url=",
+          "status": "ready",
+          "params": {
+            "url": "Anime URL"
+          }
+        },
+        {
+          "name": "Anichin Episode",
+          "desc": "Anime episodes",
+          "path": "/anime/anichin-episode?url=",
+          "status": "ready",
+          "params": {
+            "url": "Anime URL"
           }
         }
       ]
@@ -155,24 +180,24 @@
       "items": [
         {
           "name": "BRAT Generator",
-          "desc": "Generate BRAT-style text images with customizable colors and backgrounds",
+          "desc": "Create BRAT text images",
           "path": "/maker/brat?text=Hello World",
           "status": "ready",
           "params": {
-            "text": "Text to be inserted into the BRAT image (required)",
-            "background": "Background color in hex format (optional)",
-            "color": "Text color in hex format (optional)"
+            "text": "Text for image",
+            "background": "Background color",
+            "color": "Text color"
           }
         },
         {
           "name": "BRAT Video Generator",
-          "desc": "Generate animated BRAT-style text videos with customizable colors and backgrounds",
+          "desc": "Create BRAT text videos",
           "path": "/maker/bratvid?text=Hello World",
           "status": "ready",
           "params": {
-            "text": "Text to be inserted into the BRAT video (required)",
-            "background": "Background color in hex format (optional)",
-            "color": "Text color in hex format (optional)"
+            "text": "Text for video",
+            "background": "Background color",
+            "color": "Text color"
           }
         }
       ]
@@ -182,7 +207,7 @@
       "items": [
         {
           "name": "Blue Archive",
-          "desc": "Get random high-quality Blue Archive character images",
+          "desc": "Random Blue Archive images",
           "path": "/random/ba",
           "status": "ready"
         }
