@@ -1,3 +1,4 @@
+
 {
   "name": "Veron Api'S",
   "version": "v1.0.2",
@@ -39,7 +40,7 @@
           "name": "LuminAI",
           "desc": "Advanced AI assistant powered by LuminAI for intelligent conversations",
           "path": "/ai/luminai?text=",
-          "status": "error",
+          "status": "ready",
           "params": {
             "text": "Text message for the AI to respond to"
           }
@@ -47,13 +48,96 @@
       ]
     },
     {
-      "name": "Random Images",
+      "name": "Anime",
       "items": [
         {
-          "name": "Blue Archive",
-          "desc": "Get random high-quality Blue Archive character images",
-          "path": "/random/ba",
+          "name": "Anichin Popular",
+          "desc": "Get popular anime list from Anichin",
+          "path": "/anime/anichin-popular",
           "status": "ready"
+        },
+        {
+          "name": "Anichin Latest",
+          "desc": "Get latest anime episodes from Anichin",
+          "path": "/anime/anichin-latest",
+          "status": "ready"
+        },
+        {
+          "name": "Anichin Search",
+          "desc": "Search for anime on Anichin",
+          "path": "/anime/anichin-search?query=",
+          "status": "ready",
+          "params": {
+            "query": "Anime title to search for (required)"
+          }
+        },
+        {
+          "name": "Anichin Detail",
+          "desc": "Get detailed information about specific anime",
+          "path": "/anime/anichin-detail?url=",
+          "status": "ready",
+          "params": {
+            "url": "Anichin anime detail URL (required)"
+          }
+        },
+        {
+          "name": "Anichin Episode",
+          "desc": "Get episode list for specific anime",
+          "path": "/anime/anichin-episode?url=",
+          "status": "ready",
+          "params": {
+            "url": "Anichin anime URL (required)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Downloader",
+      "items": [
+        {
+          "name": "TikTok Downloader",
+          "desc": "Download TikTok videos and photos with metadata",
+          "path": "/downloader/tiktok?url=",
+          "status": "ready",
+          "params": {
+            "url": "TikTok video URL (required)"
+          }
+        },
+        {
+          "name": "Instagram Downloader",
+          "desc": "Download Instagram posts, reels, and stories",
+          "path": "/downloader/instagram?url=",
+          "status": "ready",
+          "params": {
+            "url": "Instagram post/Reel/Story URL (required)"
+          }
+        },
+        {
+          "name": "YouTube Downloader",
+          "desc": "Download YouTube community posts with images",
+          "path": "/downloader/youtube?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube community post URL (required)"
+          }
+        },
+        {
+          "name": "Facebook Downloader",
+          "desc": "Download Facebook videos with multiple quality options",
+          "path": "/downloader/facebook?url=",
+          "status": "ready",
+          "params": {
+            "url": "Facebook video URL (required)"
+          }
+        },
+        {
+          "name": "Spotify Downloader",
+          "desc": "Download Spotify tracks as MP3 files",
+          "path": "/downloader/spotify?url=",
+          "status": "ready",
+          "params": {
+            "url": "Spotify track/album URL (required)"
+          }
         }
       ]
     },
@@ -66,7 +150,9 @@
           "path": "/maker/brat?text=Hello World",
           "status": "ready",
           "params": {
-            "text": "Text to be inserted into the BRAT image (required)"
+            "text": "Text to be inserted into the BRAT image (required)",
+            "background": "Background color in hex format (optional)",
+            "color": "Text color in hex format (optional)"
           }
         },
         {
@@ -75,8 +161,21 @@
           "path": "/maker/bratvid?text=Hello World",
           "status": "ready",
           "params": {
-            "text": "Text to be inserted into the BRAT video (required)"
+            "text": "Text to be inserted into the BRAT video (required)",
+            "background": "Background color in hex format (optional)",
+            "color": "Text color in hex format (optional)"
           }
+        }
+      ]
+    },
+    {
+      "name": "Random Images",
+      "items": [
+        {
+          "name": "Blue Archive",
+          "desc": "Get random high-quality Blue Archive character images",
+          "path": "/random/ba",
+          "status": "ready"
         }
       ]
     }
