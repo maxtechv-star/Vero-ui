@@ -1,4 +1,3 @@
-
 {
   "name": "Veron Api'S",
   "version": "v1.0.2",
@@ -40,10 +39,20 @@
           "name": "LuminAI",
           "desc": "Advanced AI assistant powered by LuminAI for intelligent conversations",
           "path": "/ai/luminai?text=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "text": "Text message for the AI to respond to"
           }
+        },
+        {
+          "name": "Image to Prompt",
+          "desc": "Convert images to AI prompts using NeuralFrames technology",
+          "path": "/ai/imgprompt?imageUrl=",
+          "status": "ready",
+          "params": {
+            "imageUrl": "URL of the image to convert to prompt (required)"
+          },
+          "innerDesc": "This API converts images to descriptive AI prompts."
         }
       ]
     },
