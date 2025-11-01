@@ -13,7 +13,7 @@ export default function wormGPTHandler(app) {
                 })
             }
 
-            const api_key = "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" // Replace with your actual key
+            const api_key = "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" // Replace with your actual key
             const base_url = "https://openrouter.ai/api/v1"
             const model = "deepseek/deepseek-v3.1-terminus"
 
