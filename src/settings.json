@@ -1,4 +1,3 @@
-
 {
   "name": "Veron Api'S",
   "version": "v1.0.2",
@@ -57,29 +56,38 @@
       ]
     },
     {
-      "name": "Search",
-      "items": [
-        {
-          "name": "Apple Music Search",
-          "desc": "Search Apple Music",
-          "path": "/search/applemusic?query=",
-          "status": "ready",
-          "params": {
-            "query": "Search query",
-            "region": "Region code"
-          }
-        },
-        {
-          "name": "YouTube Search",
-          "desc": "Search YouTube videos",
-          "path": "/search/youtubesearch?query=",
-          "status": "ready",
-          "params": {
-            "query": "Search query"
-          }
-        }
-      ]
+  "name": "Search",
+  "items": [
+    {
+      "name": "Apple Music Search",
+      "desc": "Search Apple Music",
+      "path": "/search/applemusic?query=",
+      "status": "error",
+      "params": {
+        "query": "Search query",
+        "region": "Region code"
+      }
     },
+    {
+      "name": "YouTube Search",
+      "desc": "Search YouTube videos",
+      "path": "/search/youtubesearch?query=",
+      "status": "ready",
+      "params": {
+        "query": "Search query"
+      }
+    },
+    {
+      "name": "Lyrics Search",
+      "desc": "Search song lyrics",
+      "path": "/search/lyrics?query=",
+      "status": "ready",
+      "params": {
+        "query": "Song title or artist"
+      }
+    }
+  ]
+}, 
     {
   "name": "Downloader",
   "items": [
@@ -156,19 +164,19 @@
           "name": "Anichin Popular",
           "desc": "Popular anime list",
           "path": "/anime/anichin-popular",
-          "status": "ready"
+          "status": "error"
         },
         {
           "name": "Anichin Latest",
           "desc": "Latest anime episodes",
           "path": "/anime/anichin-latest",
-          "status": "ready"
+          "status": "error"
         },
         {
           "name": "Anichin Search",
           "desc": "Search anime",
           "path": "/anime/anichin-search?query=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "query": "Anime title"
           }
@@ -177,7 +185,7 @@
           "name": "Anichin Detail",
           "desc": "Anime details",
           "path": "/anime/anichin-detail?url=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "url": "Anime URL"
           }
@@ -186,7 +194,7 @@
           "name": "Anichin Episode",
           "desc": "Anime episodes",
           "path": "/anime/anichin-episode?url=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "url": "Anime URL"
           }
@@ -242,4 +250,4 @@
       "createdAt": "2025-10-30T07:48:00.000Z"
     }
   ]
-}
+        }
