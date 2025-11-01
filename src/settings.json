@@ -52,6 +52,63 @@
           "params": {
             "imageUrl": "Image URL"
           }
+        },
+        {
+          "name": "To Figure",
+          "desc": "Convert images to figurine style",
+          "path": "/ai/tofigure?imageUrl=",
+          "status": "ready",
+          "params": {
+            "imageUrl": "Image URL"
+          }
+        },
+        {
+          "name": "Pixel Art",
+          "desc": "Convert images to pixel art",
+          "path": "/ai/pixelart?imageUrl=",
+          "status": "ready",
+          "params": {
+            "imageUrl": "Image URL",
+            "ratio": "1:1, 3:2, or 2:3"
+          }
+        },
+        {
+          "name": "Image Editor",
+          "desc": "Edit images with AI",
+          "path": "/ai/imageedit",
+          "status": "ready",
+          "params": {
+            "imageData": "Base64 image",
+            "prompt": "Edit instructions"
+          }
+        },
+        {
+          "name": "Ghibli Style",
+          "desc": "Convert images to Ghibli style",
+          "path": "/ai/ghibli?imageUrl=",
+          "status": "ready",
+          "params": {
+            "imageUrl": "Image URL"
+          }
+        },
+        {
+          "name": "Image Upscale",
+          "desc": "Upscale image quality",
+          "path": "/ai/upscale?imageUrl=",
+          "status": "ready",
+          "params": {
+            "imageUrl": "Image URL",
+            "scale": "2 or 4"
+          }
+        },
+        {
+          "name": "WebPilot AI",
+          "desc": "AI web search assistant",
+          "path": "/ai/webpilot?query=",
+          "status": "ready",
+          "params": {
+            "query": "Search query"
+          }
         }
       ]
     },
@@ -154,49 +211,14 @@
           "params": {
             "url": "Spotify URL"
           }
-        }
-      ]
-    },
-    {
-      "name": "Anime",
-      "items": [
-        {
-          "name": "Anichin Popular",
-          "desc": "Popular anime list",
-          "path": "/anime/anichin-popular",
-          "status": "error"
         },
         {
-          "name": "Anichin Latest",
-          "desc": "Latest anime episodes",
-          "path": "/anime/anichin-latest",
-          "status": "error"
-        },
-        {
-          "name": "Anichin Search",
-          "desc": "Search anime",
-          "path": "/anime/anichin-search?query=",
-          "status": "error",
+          "name": "Apple Music Downloader",
+          "desc": "Download Apple Music tracks",
+          "path": "/downloader/applemusic?url=",
+          "status": "ready",
           "params": {
-            "query": "Anime title"
-          }
-        },
-        {
-          "name": "Anichin Detail",
-          "desc": "Anime details",
-          "path": "/anime/anichin-detail?url=",
-          "status": "error",
-          "params": {
-            "url": "Anime URL"
-          }
-        },
-        {
-          "name": "Anichin Episode",
-          "desc": "Anime episodes",
-          "path": "/anime/anichin-episode?url=",
-          "status": "error",
-          "params": {
-            "url": "Anime URL"
+            "url": "Apple Music URL"
           }
         }
       ]
@@ -224,6 +246,17 @@
             "text": "Text for video",
             "background": "Background color",
             "color": "Text color"
+          }
+        },
+        {
+          "name": "iPhone Quote Creator",
+          "desc": "Create iPhone style quotes",
+          "path": "/maker/iphonequote?time=&battery=&message=",
+          "status": "ready",
+          "params": {
+            "time": "Time (e.g., 18:00)",
+            "battery": "Battery percentage",
+            "message": "Quote message"
           }
         }
       ]
