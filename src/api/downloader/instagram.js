@@ -1,235 +1,195 @@
-import puppeteer from "puppeteer-extra"
-import StealthPlugin from "puppeteer-extra-plugin-stealth"
-import { createApiKeyMiddleware } from "../../middleware/apikey.js"
 
-puppeteer.use(StealthPlugin())
+import fetch from "node-fetch"
 
-export default (app) => {
-  function transformResponse(apiResponse) {
-    if (!apiResponse) {
-      return []
-    }
-
-    let items = []
-
-    if (Array.isArray(apiResponse)) {
-      items = apiResponse
-    } else if (typeof apiResponse === "object") {
-      items = [apiResponse]
-    } else {
-      return []
-    }
-
-    return items.map((item) => {
-      const mainUrl = item.url && Array.isArray(item.url) && item.url[0] ? item.url[0].url : ""
-      const thumbnailUrl = item.thumb || ""
-
-      return {
-        thumbnail: thumbnailUrl,
-        url: mainUrl,
-      }
-    }).filter((item) => item.url)
-  }
-
-  async function tryFastdl(instagramUrl) {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    })
-
-    const page = await browser.newPage()
-
-    return new Promise(async (resolve, reject) => {
-      let apiResponse = null
-      let responseReceived = false
-
-      page.on("response", async (response) => {
-        if (response.url().includes("/api/convert") && !responseReceived) {
-          responseReceived = true
-          try {
-            apiResponse = await response.json()
-            const transformedData = transformResponse(apiResponse)
-            await browser.close()
-            resolve(transformedData)
-          } catch (error) {
-            await browser.close()
-            reject(error)
-          }
-        }
-      })
-
-      await page.setRequestInterception(true)
-      page.on('request', (req) => {
-        if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
-          req.abort()
-        } else {
-          req.continue()
-        }
-      })
-
-      try {
-        await page.goto("https://fastdl.app/id", { waitUntil: "domcontentloaded" })
-        await page.type("#search-form-input", instagramUrl)
-        await page.click(".search-form__button")
-
-        setTimeout(async () => {
-          if (!responseReceived) {
-            await browser.close()
-            reject(new Error("Timeout waiting for API response"))
-          }
-        }, 30000)
-
-      } catch (error) {
-        await browser.close()
-        reject(error)
-      }
-    })
-  }
-
-  async function tryIgram(instagramUrl) {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    })
-
-    const page = await browser.newPage()
-
-    return new Promise(async (resolve, reject) => {
-      let apiResponse = null
-      let responseReceived = false
-
-      page.on("response", async (response) => {
-        if (response.url().includes("/api/convert") && !responseReceived) {
-          responseReceived = true
-          try {
-            apiResponse = await response.json()
-            const transformedData = transformResponse(apiResponse)
-            await browser.close()
-            resolve(transformedData)
-          } catch (error) {
-            await browser.close()
-            reject(error)
-          }
-        }
-      })
-
-      await page.setRequestInterception(true)
-      page.on('request', (req) => {
-        if (['image', 'stylesheet', 'font'].includes(req.resourceType())) {
-          req.abort()
-        } else {
-          req.continue()
-        }
-      })
-
-      try {
-        await page.goto("https://igram.world/id/", { waitUntil: "networkidle2" })
-        await page.waitForSelector("#search-form-input", { visible: true })
-        await page.type("#search-form-input", instagramUrl)
-        await page.waitForSelector(".search-form__button", { visible: true })
-        await page.evaluate(() => {
-          document.querySelector(".search-form__button")?.click()
-        })
-
-        setTimeout(async () => {
-          if (!responseReceived) {
-            await browser.close()
-            reject(new Error("Timeout waiting for API response"))
-          }
-        }, 30000)
-
-      } catch (error) {
-        await browser.close()
-        reject(error)
-      }
-    })
-  }
-
-  async function downloadInstagram(instagramUrl) {
-    try {
-      return await tryFastdl(instagramUrl)
-    } catch (error) {
-      try {
-        return await tryIgram(instagramUrl)
-      } catch (fallbackError) {
-        throw new Error("Both services failed")
-      }
-    }
-  }
-
-  app.get("/downloader/instagram", createApiKeyMiddleware(), async (req, res) => {
-    try {
-      const { url } = req.query
-
-      if (!url) {
-        return res.status(400).json({
-          status: false,
-          error: "Parameter URL is required",
-        })
-      }
-
-      if (typeof url !== "string" || url.trim().length === 0) {
-        return res.status(400).json({
-          status: false,
-          error: "URL must be a non-empty string",
-        })
-      }
-
-      const result = await downloadInstagram(url.trim())
-      if (!result || result.length === 0) {
-        return res.status(404).json({
-          status: false,
-          error: "No download links found for the provided URL",
-        })
-      }
-      res.status(200).json({
-        status: true,
-        data: result,
-        timestamp: new Date().toISOString(),
-      })
-    } catch (error) {
-      res.status(500).json({
-        status: false,
-        error: error.message || "Internal Server Error",
-      })
-    }
-  })
-
-  app.post("/downloader/instagram", createApiKeyMiddleware(), async (req, res) => {
-    try {
-      const { url } = req.body
-
-      if (!url) {
-        return res.status(400).json({
-          status: false,
-          error: "Parameter URL is required",
-        })
-      }
-
-      if (typeof url !== "string" || url.trim().length === 0) {
-        return res.status(400).json({
-          status: false,
-          error: "URL must be a non-empty string",
-        })
-      }
-
-      const result = await downloadInstagram(url.trim())
-      if (!result || result.length === 0) {
-        return res.status(404).json({
-          status: false,
-          error: "No download links found for the provided URL",
-        })
-      }
-      res.status(200).json({
-        status: true,
-        data: result,
-        timestamp: new Date().toISOString(),
-      })
-    } catch (error) {
-      res.status(500).json({
-        status: false,
-        error: error.message || "Internal Server Error",
-      })
-    }
-  })
+function randomIP() {
+  return Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)).join(".")
 }
+
+async function getToken() {
+  const res = await fetch("https://gramfetchr.com/", {
+    method: "POST",
+    headers: {
+      "accept": "text/x-component",
+      "content-type": "text/plain;charset=UTF-8",
+      "next-action": "00d6c3101978ea75ab0e1c4879ef0c686242515660",
+      "next-router-state-tree": "%5B%22%22%2C%7B%22children%22%3A%5B%5B%22locale%22%2C%22en%22%2C%22d%22%5D%2C%7B%22children%22%3A%5B%22__PAGE__%22%2C%7B%7D%2Cnull%2Cnull%5D%7D%2Cnull%2Cnull%2Ctrue%5D%7D%2Cnull%2Cnull%5D",
+      "Referer": "https://gramfetchr.com/"
+    },
+    body: "[]"
+  })
+  const text = await res.text()
+  const tokenMatch = text.match(/"([a-f0-9]{32}:[a-f0-9]{32})"/)
+  if (!tokenMatch) throw new Error("Failed to get token")
+  return tokenMatch[1]
+}
+
+async function igScraper(url) {
+  try {
+    const token = await getToken()
+    const res = await fetch("https://gramfetchr.com/api/fetchr", {
+      method: "POST",
+      headers: {
+        "accept": "*/*",
+        "content-type": "application/json",
+        "Referer": "https://gramfetchr.com/"
+      },
+      body: JSON.stringify({
+        url,
+        token,
+        referer: "https://gramfetchr.com/",
+        requester: randomIP()
+      })
+    })
+    const json = await res.json()
+    if (!json.success || !json.mediaItems) throw new Error("Failed to get media data")
+    return json.mediaItems.map((m, i) => ({
+      index: i + 1,
+      type: m.isVideo ? "video" : "image",
+      download: "https://gramfetchr.com" + m.downloadLink,
+      preview: "https://gramfetchr.com" + m.preview,
+      thumbnail: "https://gramfetchr.com" + m.thumbnail
+    }))
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
+export default function instagramDownloaderRoute(app) {
+    app.get("/downloader/instagram", async (req, res) => {
+        try {
+            const { url } = req.query
+            
+            if (!url) {
+                return res.status(400).json({
+                    status: false,
+                    error: "URL parameter is required",
+                    message: "Please provide an Instagram URL"
+                })
+            }
+
+            // Validate Instagram URL
+            const instagramRegex = /https?:\/\/(www\.)?instagram\.com\/(p|reel|stories)\/[a-zA-Z0-9_-]+\/?/
+            if (!instagramRegex.test(url)) {
+                return res.status(400).json({
+                    status: false,
+                    error: "Invalid Instagram URL",
+                    message: "Please provide a valid Instagram post, reel, or story URL"
+                })
+            }
+
+            const mediaItems = await igScraper(url)
+
+            if (!mediaItems || mediaItems.length === 0) {
+                return res.status(404).json({
+                    status: false,
+                    error: "No media found",
+                    message: "Could not find any media for this Instagram URL"
+                })
+            }
+
+            res.json({
+                status: true,
+                data: {
+                    url: url,
+                    mediaCount: mediaItems.length,
+                    media: mediaItems,
+                    types: {
+                        images: mediaItems.filter(item => item.type === 'image').length,
+                        videos: mediaItems.filter(item => item.type === 'video').length
+                    }
+                },
+                message: `Found ${mediaItems.length} media item(s) from Instagram`
+            })
+
+        } catch (error) {
+            console.error("Instagram Download Error:", error.message)
+            
+            if (error.message.includes('Failed to get token')) {
+                return res.status(503).json({
+                    status: false,
+                    error: "Service temporarily unavailable",
+                    message: "Instagram download service is currently unavailable. Please try again later."
+                })
+            }
+            
+            if (error.message.includes('Failed to get media data')) {
+                return res.status(404).json({
+                    status: false,
+                    error: "Media not found",
+                    message: "Could not find media for this Instagram URL. It may be private or deleted."
+                })
+            }
+
+            res.status(500).json({
+                status: false,
+                error: "Download failed",
+                message: error.message || "An error occurred while processing the Instagram URL"
+            })
+        }
+    })
+
+    // Additional endpoint to get media info without downloading
+    app.get("/downloader/instagram/info", async (req, res) => {
+        try {
+            const { url } = req.query
+            
+            if (!url) {
+                return res.status(400).json({
+                    status: false,
+                    error: "URL parameter is required",
+                    message: "Please provide an Instagram URL"
+                })
+            }
+
+            const instagramRegex = /https?:\/\/(www\.)?instagram\.com\/(p|reel|stories)\/[a-zA-Z0-9_-]+\/?/
+            if (!instagramRegex.test(url)) {
+                return res.status(400).json({
+                    status: false,
+                    error: "Invalid Instagram URL",
+                    message: "Please provide a valid Instagram post, reel, or story URL"
+                })
+            }
+
+            const mediaItems = await igScraper(url)
+
+            if (!mediaItems || mediaItems.length === 0) {
+                return res.status(404).json({
+                    status: false,
+                    error: "No media found",
+                    message: "Could not find any media for this Instagram URL"
+                })
+            }
+
+            // Extract media info without download links
+            const mediaInfo = mediaItems.map(item => ({
+                index: item.index,
+                type: item.type,
+                preview: item.preview,
+                thumbnail: item.thumbnail
+            }))
+
+            res.json({
+                status: true,
+                data: {
+                    url: url,
+                    mediaCount: mediaItems.length,
+                    mediaInfo: mediaInfo,
+                    types: {
+                        images: mediaItems.filter(item => item.type === 'image').length,
+                        videos: mediaItems.filter(item => item.type === 'video').length
+                    }
+                },
+                message: `Found ${mediaItems.length} media item(s) from Instagram`
+            })
+
+        } catch (error) {
+            console.error("Instagram Info Error:", error.message)
+            
+            res.status(500).json({
+                status: false,
+                error: "Info retrieval failed",
+                message: error.message || "An error occurred while getting Instagram media info"
+            })
+        }
+    })
+      }
