@@ -108,7 +108,7 @@
       "status": "ready",
       "params": {
         "url": "YouTube URL",
-        "format": "mp3 or mp4"
+        "format": "mp3 or mp4 (required)"
       }
     },
     {
