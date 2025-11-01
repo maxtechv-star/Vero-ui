@@ -56,107 +56,107 @@
       ]
     },
     {
-  "name": "Search",
-  "items": [
-    {
-      "name": "Apple Music Search",
-      "desc": "Search Apple Music",
-      "path": "/search/applemusic?query=",
-      "status": "error",
-      "params": {
-        "query": "Search query",
-        "region": "Region code"
-      }
+      "name": "Search",
+      "items": [
+        {
+          "name": "Apple Music Search",
+          "desc": "Search Apple Music",
+          "path": "/search/applemusic?query=",
+          "status": "error",
+          "params": {
+            "query": "Search query",
+            "region": "Region code"
+          }
+        },
+        {
+          "name": "YouTube Search",
+          "desc": "Search YouTube videos",
+          "path": "/search/youtubesearch?query=",
+          "status": "ready",
+          "params": {
+            "query": "Search query"
+          }
+        },
+        {
+          "name": "Lyrics Search",
+          "desc": "Search song lyrics",
+          "path": "/search/lyrics?query=",
+          "status": "ready",
+          "params": {
+            "query": "Song title or artist"
+          }
+        }
+      ]
     },
     {
-      "name": "YouTube Search",
-      "desc": "Search YouTube videos",
-      "path": "/search/youtubesearch?query=",
-      "status": "ready",
-      "params": {
-        "query": "Search query"
-      }
+      "name": "Downloader",
+      "items": [
+        {
+          "name": "YouTube Audio",
+          "desc": "Download YouTube as MP3 audio",
+          "path": "/downloader/youtube/audio?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube URL"
+          }
+        },
+        {
+          "name": "YouTube Video",
+          "desc": "Download YouTube as MP4 video",
+          "path": "/downloader/youtube/video?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube URL"
+          }
+        },
+        {
+          "name": "YouTube Downloader",
+          "desc": "Download YouTube as MP3 or MP4",
+          "path": "/downloader/youtube?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube URL",
+            "format": "mp3 or mp4"
+          }
+        },
+        {
+          "name": "TikTok Downloader",
+          "desc": "Download TikTok videos",
+          "path": "/downloader/tiktok?url=",
+          "status": "ready",
+          "params": {
+            "url": "TikTok URL"
+          }
+        },
+        {
+          "name": "Instagram Downloader",
+          "desc": "Download Instagram posts",
+          "path": "/downloader/instagram?url=",
+          "status": "ready",
+          "params": {
+            "url": "Instagram URL"
+          }
+        },
+        {
+          "name": "Facebook Downloader",
+          "desc": "Download Facebook videos",
+          "path": "/downloader/facebook?url=",
+          "status": "ready",
+          "params": {
+            "url": "Facebook URL"
+          }
+        },
+        {
+          "name": "Spotify Downloader",
+          "desc": "Download Spotify tracks",
+          "path": "/downloader/spotify?url=",
+          "status": "ready",
+          "params": {
+            "url": "Spotify URL"
+          }
+        }
+      ]
     },
-    {
-      "name": "Lyrics Search",
-      "desc": "Search song lyrics",
-      "path": "/search/lyrics?query=",
-      "status": "ready",
-      "params": {
-        "query": "Song title or artist"
-      }
-    }
-  ]
-}, 
-    {
-  "name": "Downloader",
-  "items": [
-    {
-      "name": "YouTube Audio",
-      "desc": "Download YouTube as MP3 audio",
-      "path": "/downloader/youtube/audio?url=",
-      "status": "ready",
-      "params": {
-        "url": "YouTube URL"
-      }
-    },
-    {
-      "name": "YouTube Video",
-      "desc": "Download YouTube as MP4 video",
-      "path": "/downloader/youtube/video?url=",
-      "status": "ready",
-      "params": {
-        "url": "YouTube URL"
-      }
-    },
-    {
-      "name": "YouTube Downloader",
-      "desc": "Download YouTube as MP3 or MP4",
-      "path": "/downloader/youtube?url=",
-      "status": "ready",
-      "params": {
-        "url": "YouTube URL",
-        "format": "mp3 or mp4 (required)"
-      }
-    },
-    {
-      "name": "TikTok Downloader",
-      "desc": "Download TikTok videos",
-      "path": "/downloader/tiktok?url=",
-      "status": "ready",
-      "params": {
-        "url": "TikTok URL"
-      }
-    },
-    {
-      "name": "Instagram Downloader",
-      "desc": "Download Instagram posts",
-      "path": "/downloader/instagram?url=",
-      "status": "ready",
-      "params": {
-        "url": "Instagram URL"
-      }
-    },
-    {
-      "name": "Facebook Downloader",
-      "desc": "Download Facebook videos",
-      "path": "/downloader/facebook?url=",
-      "status": "ready",
-      "params": {
-        "url": "Facebook URL"
-      }
-    },
-    {
-      "name": "Spotify Downloader",
-      "desc": "Download Spotify tracks",
-      "path": "/downloader/spotify?url=",
-      "status": "ready",
-      "params": {
-        "url": "Spotify URL"
-      }
-    }
-  ]
-},
     {
       "name": "Anime",
       "items": [
@@ -238,6 +238,26 @@
           "status": "ready"
         }
       ]
+    },
+    {
+      "name": "Tools",
+      "items": [
+        {
+          "name": "Speed Test",
+          "desc": "Test internet speed",
+          "path": "/tools/speedtest",
+          "status": "ready"
+        },
+        {
+          "name": "URL Shortener",
+          "desc": "Shorten long URLs",
+          "path": "/tools/shorturl?url=",
+          "status": "ready",
+          "params": {
+            "url": "URL to shorten"
+          }
+        }
+      ]
     }
   ],
   "apiKeys": [
@@ -250,4 +270,4 @@
       "createdAt": "2025-10-30T07:48:00.000Z"
     }
   ]
-        }
+}
