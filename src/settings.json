@@ -81,66 +81,74 @@
       ]
     },
     {
-      "name": "Downloader",
-      "items": [
-        {
-          "name": "YouTube Audio",
-          "desc": "Download YouTube audio",
-          "path": "/downloader/youtube/audio?url=",
-          "status": "ready",
-          "params": {
-            "url": "YouTube URL",
-            "quality": "highest/lowest"
-          }
-        },
-        {
-          "name": "YouTube Video",
-          "desc": "Download YouTube video",
-          "path": "/downloader/youtube/video?url=",
-          "status": "ready",
-          "params": {
-            "url": "YouTube URL",
-            "quality": "highest/lowest"
-          }
-        },
-        {
-          "name": "TikTok Downloader",
-          "desc": "Download TikTok videos",
-          "path": "/downloader/tiktok?url=",
-          "status": "ready",
-          "params": {
-            "url": "TikTok URL"
-          }
-        },
-        {
-          "name": "Instagram Downloader",
-          "desc": "Download Instagram posts",
-          "path": "/downloader/instagram?url=",
-          "status": "ready",
-          "params": {
-            "url": "Instagram URL"
-          }
-        },
-        {
-          "name": "Facebook Downloader",
-          "desc": "Download Facebook videos",
-          "path": "/downloader/facebook?url=",
-          "status": "ready",
-          "params": {
-            "url": "Facebook URL"
-          }
-        },
-        {
-          "name": "Spotify Downloader",
-          "desc": "Download Spotify tracks",
-          "path": "/downloader/spotify?url=",
-          "status": "ready",
-          "params": {
-            "url": "Spotify URL"
-          }
-        }
-      ]
+  "name": "Downloader",
+  "items": [
+    {
+      "name": "YouTube Audio",
+      "desc": "Download YouTube as MP3 audio",
+      "path": "/downloader/youtube/audio?url=",
+      "status": "ready",
+      "params": {
+        "url": "YouTube URL"
+      }
     },
+    {
+      "name": "YouTube Video",
+      "desc": "Download YouTube as MP4 video",
+      "path": "/downloader/youtube/video?url=",
+      "status": "ready",
+      "params": {
+        "url": "YouTube URL"
+      }
+    },
+    {
+      "name": "YouTube Downloader",
+      "desc": "Download YouTube as MP3 or MP4",
+      "path": "/downloader/youtube?url=",
+      "status": "ready",
+      "params": {
+        "url": "YouTube URL",
+        "format": "mp3 or mp4"
+      }
+    },
+    {
+      "name": "TikTok Downloader",
+      "desc": "Download TikTok videos",
+      "path": "/downloader/tiktok?url=",
+      "status": "ready",
+      "params": {
+        "url": "TikTok URL"
+      }
+    },
+    {
+      "name": "Instagram Downloader",
+      "desc": "Download Instagram posts",
+      "path": "/downloader/instagram?url=",
+      "status": "ready",
+      "params": {
+        "url": "Instagram URL"
+      }
+    },
+    {
+      "name": "Facebook Downloader",
+      "desc": "Download Facebook videos",
+      "path": "/downloader/facebook?url=",
+      "status": "ready",
+      "params": {
+        "url": "Facebook URL"
+      }
+    },
+    {
+      "name": "Spotify Downloader",
+      "desc": "Download Spotify tracks",
+      "path": "/downloader/spotify?url=",
+      "status": "ready",
+      "params": {
+        "url": "Spotify URL"
+      }
+    }
+  ]
+},
     {
       "name": "Anime",
       "items": [
@@ -234,4 +242,4 @@
       "createdAt": "2025-10-30T07:48:00.000Z"
     }
   ]
-        }
+}
