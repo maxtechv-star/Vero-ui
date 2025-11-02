@@ -103,23 +103,24 @@
           }
         },
         {
-      "name": "WormGPT",
-      "desc": "Unfiltered AI assistant",
-      "path": "/ai/wormgpt?query=",
-      "status": "ready",
-      "params": {
-        "query": "Your query"
-      },
-      {
-      "name": "GPT-4o",
-      "desc": "OpenAI GPT-4o model",
-      "path": "/ai/gpt4o?query=",
-      "status": "ready",
-      "params": {
-        "query": "Your question"
-      }
-    }
-  ]
+          "name": "WormGPT",
+          "desc": "Unfiltered AI assistant",
+          "path": "/ai/wormgpt?query=",
+          "status": "ready",
+          "params": {
+            "query": "Your query"
+          }
+        },
+        {
+          "name": "GPT-4o",
+          "desc": "OpenAI GPT-4o model",
+          "path": "/ai/gpt4o?query=",
+          "status": "ready",
+          "params": {
+            "query": "Your question"
+          }
+        }
+      ]
     },
     {
       "name": "Search",
@@ -312,4 +313,4 @@
       "createdAt": "2025-10-30T07:48:00.000Z"
     }
   ]
-        }
+}
