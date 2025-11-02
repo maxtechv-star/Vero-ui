@@ -109,6 +109,14 @@
       "status": "ready",
       "params": {
         "query": "Your query"
+      },
+      {
+      "name": "GPT-4o",
+      "desc": "OpenAI GPT-4o model",
+      "path": "/ai/gpt4o?query=",
+      "status": "ready",
+      "params": {
+        "query": "Your question"
       }
     }
   ]
