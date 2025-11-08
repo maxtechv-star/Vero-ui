@@ -6,6 +6,7 @@ import path from "path"
 import { fileURLToPath, pathToFileURL } from "url"
 import { createRequire } from "module"
 import dotenv from "dotenv"
+import fileUpload from "express-fileupload"
 
 const nodeVersion = process.versions.node.split(".")[0]
 if (Number.parseInt(nodeVersion) < 20) {
@@ -37,6 +38,16 @@ app.set("json spaces", 2)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cors())
+app.use(fileUpload({
+  createParentPath: true,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  abortOnLimit: true,
+  responseOnLimit: "File size exceeds the 5MB limit",
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
+}))
 
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff")
@@ -57,7 +68,10 @@ app.use((req, res, next) => {
     const isApiEndpoint = req.path.startsWith('/api/') || 
                          req.path.startsWith('/ai/') || 
                          req.path.startsWith('/random/') || 
-                         req.path.startsWith('/maker/')
+                         req.path.startsWith('/maker/') ||
+                         req.path.startsWith('/tools/') ||
+                         req.path.startsWith('/downloader/') ||
+                         req.path.startsWith('/search/')
     
     if (isApiEndpoint && settings.apiSettings && settings.apiSettings.requireApikey === false) {
       return next()
@@ -103,7 +117,7 @@ app.use((req, res, next) => {
     const shouldSkip = skipPaths.some((path) => req.path.startsWith(path))
 
     if (settings.maintenance && settings.maintenance.enabled && !shouldSkip) {
-      if (req.path.startsWith("/api/") || req.path.startsWith("/ai/")) {
+      if (req.path.startsWith("/api/") || req.path.startsWith("/ai/") || req.path.startsWith("/tools/")) {
         return res.status(503).json({
           status: false,
           error: "Service temporarily unavailable",
