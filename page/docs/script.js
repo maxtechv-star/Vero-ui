@@ -1,4 +1,3 @@
-// contents of script.js
 document.addEventListener("DOMContentLoaded", async () => {
   const DOM = {
     loadingScreen: document.getElementById("loadingScreen"),
@@ -24,8 +23,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       spinner: document.getElementById("apiResponseLoading"),
       queryInputContainer: document.getElementById("apiQueryInputContainer"),
       submitBtn: document.getElementById("submitQueryBtn"),
+      postBtn: document.getElementById("submitPostBtn"),
       copyEndpointBtn: document.getElementById("copyEndpoint"),
       copyResponseBtn: document.getElementById("copyResponse"),
+      methodSelect: document.getElementById("methodSelect"),
+      fileUploadContainer: document.getElementById("fileUploadContainer"),
+      fileInput: document.getElementById("apiFileInput"),
     },
     pageTitle: document.getElementById("page"),
     wm: document.getElementById("wm"),
@@ -545,7 +548,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (DOM.notificationBell) DOM.notificationBell.addEventListener("click", handleNotificationBellClick)
 
-    if (DOM.apiContent) DOM.apiContent.addEventListener("click", handleApiGetButtonClick)
+    // Unified handler for API card clicks (GET and POST buttons)
+    if (DOM.apiContent) DOM.apiContent.addEventListener("click", handleApiCardButtons)
 
     if (DOM.modal.copyEndpointBtn)
       DOM.modal.copyEndpointBtn.addEventListener("click", () =>
@@ -556,6 +560,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         copyToClipboard(DOM.modal.content.textContent, DOM.modal.copyResponseBtn),
       )
     if (DOM.modal.submitBtn) DOM.modal.submitBtn.addEventListener("click", handleSubmitQuery)
+
+    // POST button handler (multipart/form-data)
+    if (DOM.modal.postBtn) {
+      DOM.modal.postBtn.addEventListener("click", handleSubmitPost)
+    }
 
     if (DOM.modal.element) {
       DOM.modal.element.addEventListener("hidden.bs.modal", () => {
@@ -568,6 +577,22 @@ document.addEventListener("DOMContentLoaded", async () => {
               showSponsorModal()
             }, 100)
           }
+        }
+      })
+      DOM.modal.element.addEventListener('shown.bs.modal', () => {
+        // reset file input when modal opens
+        if (DOM.modal.fileInput) {
+          try { DOM.modal.fileInput.value = ''; } catch(e){}
+        }
+        // ensure UI reflects current method selection
+        const ms = DOM.modal.methodSelect
+        if (ms) {
+          const fileContainer = DOM.modal.fileUploadContainer
+          const submitPost = DOM.modal.postBtn
+          const submitGet = DOM.modal.submitBtn
+          if (fileContainer) fileContainer.style.display = ms.value === 'POST' ? '' : 'none'
+          if (submitPost) submitPost.style.display = ms.value === 'POST' ? 'inline-block' : 'none'
+          if (submitGet) submitGet.style.display = ms.value === 'POST' ? 'none' : ''
         }
       })
     }
@@ -862,6 +887,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         statusIndicator.innerHTML = `<i class="fas ${currentStatus.icon} me-1" aria-hidden="true"></i><span>${currentStatus.text}</span>`
 
         actionsDiv.appendChild(getBtn)
+
+        // Heuristic to determine whether to show a POST button (image/file related endpoints)
+        const supportsPost = (() => {
+          try {
+            if (!item) return false
+            const pathNoQuery = (item.path || "").split("?")[0].toLowerCase()
+            const hasImageParam =
+              item.params &&
+              Object.values(item.params).some((v) => /image|file|imageData|imageUrl|fileData/i.test(String(v)))
+            const nameHasImage = /image|photo|upload|file/i.test(item.name || "")
+            return pathNoQuery.includes("/ai/") || hasImageParam || nameHasImage
+          } catch (e) {
+            return false
+          }
+        })()
+
+        if (supportsPost) {
+          const postBtn = document.createElement("button")
+          postBtn.type = "button"
+          // match GET sizing/appearance by reusing get-api-btn classes
+          postBtn.className = "btn get-api-btn post-api-btn btn-sm"
+          postBtn.innerHTML = 'POST'
+          // store metadata for handler
+          postBtn.dataset.apiPath = item.path ? item.path.split("?")[0] : item.path
+          postBtn.dataset.apiName = item.name
+          postBtn.dataset.apiDesc = item.desc
+          if (item.params) postBtn.dataset.apiParams = JSON.stringify(item.params)
+          if (item.innerDesc) postBtn.dataset.apiInnerDesc = item.innerDesc
+          postBtn.setAttribute("aria-label", `Post data to ${item.name}`)
+
+          // If endpoint in error state, disable post as well
+          if (status === "error" || status === "update") {
+            postBtn.disabled = true
+          }
+
+          actionsDiv.appendChild(postBtn)
+        }
+
         actionsDiv.appendChild(statusIndicator)
 
         apiCard.appendChild(cardInfo)
@@ -960,7 +1023,43 @@ document.addEventListener("DOMContentLoaded", async () => {
     return noResultsMsg
   }
 
-  const handleApiGetButtonClick = (event) => {
+  // Unified handler for API card GET and POST buttons
+  const handleApiCardButtons = (event) => {
+    const postBtn = event.target.closest(".post-api-btn")
+    if (postBtn && !postBtn.disabled) {
+      // Prepare currentApiData similar to GET but ensure path without query
+      currentApiData = {
+        path: postBtn.dataset.apiPath,
+        name: postBtn.dataset.apiName,
+        desc: postBtn.dataset.apiDesc,
+        params: postBtn.dataset.apiParams ? JSON.parse(postBtn.dataset.apiParams) : null,
+        innerDesc: postBtn.dataset.apiInnerDesc,
+      }
+
+      setupModalForApi(currentApiData)
+
+      // set modal to POST mode
+      const methodSelect = document.getElementById("methodSelect")
+      const fileContainer = document.getElementById("fileUploadContainer")
+      const submitPost = document.getElementById("submitPostBtn")
+      const submitGet = document.getElementById("submitQueryBtn")
+      if (methodSelect) {
+        methodSelect.value = "POST"
+        // show/hide accordingly
+        if (fileContainer) fileContainer.style.display = ""
+        if (submitPost) submitPost.style.display = "inline-block"
+        if (submitGet) submitGet.style.display = "none"
+      } else {
+        // fallback: show file container if exists
+        if (fileContainer) fileContainer.style.display = ""
+        if (submitPost) submitPost.style.display = "inline-block"
+        if (submitGet) submitGet.style.display = "none"
+      }
+
+      DOM.modal.instance.show()
+      return
+    }
+
     const getApiBtn = event.target.closest(".get-api-btn")
     if (!getApiBtn || getApiBtn.disabled) return
 
@@ -976,6 +1075,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     setupModalForApi(currentApiData)
+    // ensure modal in GET mode
+    const methodSelectEl = document.getElementById("methodSelect")
+    if (methodSelectEl) {
+      methodSelectEl.value = "GET"
+      const fileContainer = document.getElementById("fileUploadContainer")
+      const submitPost = document.getElementById("submitPostBtn")
+      const submitGet = document.getElementById("submitQueryBtn")
+      if (fileContainer) fileContainer.style.display = "none"
+      if (submitPost) submitPost.style.display = "none"
+      if (submitGet) submitGet.style.display = "inline-block"
+    }
+
     DOM.modal.instance.show()
   }
 
@@ -991,9 +1102,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     DOM.modal.endpoint.classList.remove("d-none")
 
     DOM.modal.queryInputContainer.innerHTML = ""
-    DOM.modal.submitBtn.classList.add("d-none")
-    DOM.modal.submitBtn.disabled = true
-    DOM.modal.submitBtn.innerHTML = '<span>Send</span><i class="fas fa-paper-plane ms-2" aria-hidden="true"></i>'
+    if (DOM.modal.submitBtn) DOM.modal.submitBtn.classList.add("d-none")
+    if (DOM.modal.submitBtn) DOM.modal.submitBtn.disabled = true
+    if (DOM.modal.submitBtn) DOM.modal.submitBtn.innerHTML = '<span>Send</span><i class="fas fa-paper-plane ms-2" aria-hidden="true"></i>'
 
     const downloadImageBtn = DOM.modal.element.querySelector(".download-image-btn")
     const downloadVideoBtn = DOM.modal.element.querySelector(".download-video-btn")
@@ -1017,6 +1128,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const paramsFromPath = new URLSearchParams(apiData.path.split("?")[1])
     const paramKeys = Array.from(paramsFromPath.keys())
+
+    // show file upload container by default hidden; ensure it exists
+    if (DOM.modal.fileUploadContainer) {
+      // hide initially; method selector will show when POST chosen
+      DOM.modal.fileUploadContainer.style.display = "none"
+    }
 
     if (paramKeys.length > 0) {
       const paramContainer = document.createElement("div")
@@ -1122,9 +1239,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       DOM.modal.queryInputContainer.appendChild(paramContainer)
-      DOM.modal.submitBtn.classList.remove("d-none")
-      DOM.modal.submitBtn.disabled = true
-      DOM.modal.submitBtn.innerHTML = '<span>Send</span><i class="fas fa-paper-plane ms-2" aria-hidden="true"></i>'
+      if (DOM.modal.submitBtn) {
+        DOM.modal.submitBtn.classList.remove("d-none")
+        DOM.modal.submitBtn.disabled = true
+        DOM.modal.submitBtn.innerHTML = '<span>Send</span><i class="fas fa-paper-plane ms-2" aria-hidden="true"></i>'
+      }
 
       initializeTooltips(DOM.modal.queryInputContainer)
     } else if (settings.apiSettings?.requireApikey) {
@@ -1177,22 +1296,51 @@ document.addEventListener("DOMContentLoaded", async () => {
       apikeyGroup.appendChild(apikeyInputContainer)
       paramContainer.appendChild(apikeyGroup)
 
-      DOM.modal.queryInputContainer.appendChild(paramContainer)
-      DOM.modal.submitBtn.classList.remove("d-none")
-      DOM.modal.submitBtn.disabled = true
-      DOM.modal.submitBtn.innerHTML = '<span>Send</span><i class="fas fa-paper-plane ms-2" aria-hidden="true"></i>'
+      if (DOM.modal.submitBtn) {
+        DOM.modal.submitBtn.classList.remove("d-none")
+        DOM.modal.submitBtn.disabled = true
+        DOM.modal.submitBtn.innerHTML = '<span>Send</span><i class="fas fa-paper-plane ms-2" aria-hidden="true"></i>'
+      }
 
+      DOM.modal.queryInputContainer.appendChild(paramContainer)
       initializeTooltips(DOM.modal.queryInputContainer)
     } else {
       handleApiRequest(`${window.location.origin}${apiData.path}`, apiData.name)
+    }
+
+    // Ensure method select & file upload UI consistency after creating inputs
+    const methodSelectEl = document.getElementById("methodSelect")
+    const fileUploadContainerEl = document.getElementById("fileUploadContainer")
+    const submitPostBtnEl = document.getElementById("submitPostBtn")
+    const submitQueryBtnEl = document.getElementById("submitQueryBtn")
+
+    if (methodSelectEl) {
+      // default to GET
+      if (!methodSelectEl.value) methodSelectEl.value = "GET"
+      // show/hide file upload UI based on current value
+      if (fileUploadContainerEl) {
+        fileUploadContainerEl.style.display = methodSelectEl.value === "POST" ? "" : "none"
+      }
+      // show/hide submit buttons
+      if (submitPostBtnEl) submitPostBtnEl.style.display = methodSelectEl.value === "POST" ? "inline-block" : "none"
+      if (submitQueryBtnEl) submitQueryBtnEl.style.display = methodSelectEl.value === "POST" ? "none" : ""
+      // attach change listener once
+      if (!methodSelectEl._listenerAdded) {
+        methodSelectEl.addEventListener("change", (e) => {
+          if (fileUploadContainerEl) fileUploadContainerEl.style.display = e.target.value === "POST" ? "" : "none"
+          if (submitPostBtnEl) submitPostBtnEl.style.display = e.target.value === "POST" ? "inline-block" : "none"
+          if (submitQueryBtnEl) submitQueryBtnEl.style.display = e.target.value === "POST" ? "none" : ""
+        })
+        methodSelectEl._listenerAdded = true
+      }
     }
   }
 
   const validateModalInputs = () => {
     const inputs = DOM.modal.queryInputContainer.querySelectorAll("input[required]")
     const allFilled = Array.from(inputs).every((input) => input.value.trim() !== "")
-    DOM.modal.submitBtn.disabled = !allFilled
-    DOM.modal.submitBtn.classList.toggle("btn-active", allFilled)
+    if (DOM.modal.submitBtn) DOM.modal.submitBtn.disabled = !allFilled
+    if (DOM.modal.submitBtn) DOM.modal.submitBtn.classList.toggle("btn-active", allFilled)
 
     inputs.forEach((input) => {
       if (input.value.trim()) input.classList.remove("is-invalid")
@@ -1248,6 +1396,211 @@ document.addEventListener("DOMContentLoaded", async () => {
     DOM.modal.endpoint.textContent = apiUrlWithParams
 
     await handleApiRequest(apiUrlWithParams, currentApiData.name)
+  }
+
+  // Build FormData from inputs and files (used for POST)
+  const buildFormDataFromInputs = () => {
+    const fd = new FormData()
+    // collect inputs created by main script - they have data-param attributes
+    const inputs = DOM.modal.queryInputContainer.querySelectorAll('input, select, textarea')
+    inputs.forEach((input) => {
+      const param = input.dataset && input.dataset.param ? input.dataset.param : input.name || input.id
+      if (!param) return
+      if (input.type === 'file') {
+        // skip - file input is handled via DOM.modal.fileInput
+        return
+      }
+      if (input.type === 'checkbox' || input.type === 'radio') {
+        if (input.checked) fd.append(param, input.value)
+      } else {
+        if (input.value !== '') fd.append(param, input.value)
+      }
+    })
+
+    // Append files (multiple supported)
+    if (DOM.modal.fileInput && DOM.modal.fileInput.files && DOM.modal.fileInput.files.length) {
+      Array.from(DOM.modal.fileInput.files).forEach((file, idx) => {
+        // primary: 'files[]'
+        fd.append('files[]', file, file.name)
+        // secondary: individual file param names (file0, file1...)
+        fd.append(`file${idx}`, file, file.name)
+      })
+    }
+
+    return fd
+  }
+
+  // Validate required inputs before POST (mirrors main validation)
+  const validateRequiredInputs = () => {
+    const requiredInputs = DOM.modal.queryInputContainer.querySelectorAll('input[required], textarea[required], select[required]')
+    let ok = true
+    requiredInputs.forEach((input) => {
+      if (!input.value || input.value.trim() === '') {
+        ok = false
+        input.classList.add('is-invalid')
+      } else {
+        input.classList.remove('is-invalid')
+      }
+    })
+    return ok
+  }
+
+  // Display fetch response similar to GET handler: images/videos/JSON/text
+  const displayFetchResponse = async (response, apiName) => {
+    DOM.modal.container.classList.remove("d-none")
+    DOM.modal.content.classList.remove("d-none")
+    DOM.modal.content.innerHTML = ""
+    const contentType = response.headers.get("Content-Type") || ""
+    if (contentType.includes("image/")) {
+      const blob = await response.blob()
+      const imageUrl = URL.createObjectURL(blob)
+      const img = document.createElement("img")
+      img.src = imageUrl
+      img.alt = apiName || "image"
+      img.className = "response-image img-fluid rounded shadow-sm fade-in"
+      DOM.modal.content.appendChild(img)
+
+      let downloadImageBtn = DOM.modal.element.querySelector(".download-image-btn")
+      if (!downloadImageBtn) {
+        downloadImageBtn = document.createElement("a")
+        downloadImageBtn.className = "btn btn-success me-2 download-image-btn"
+        downloadImageBtn.innerHTML = '<i class="fas fa-download me-2"></i> Download Image'
+        downloadImageBtn.style.textDecoration = "none"
+
+        const modalFooter = DOM.modal.element.querySelector(".modal-footer")
+        modalFooter.insertBefore(downloadImageBtn, DOM.modal.submitBtn)
+      }
+
+      downloadImageBtn.href = imageUrl
+      downloadImageBtn.download = `${(apiName || 'download').toLowerCase().replace(/\s+/g, "-")}.${blob.type.split("/")[1] || "png"}`
+      downloadImageBtn.style.display = "inline-block"
+    } else if (contentType.includes("video/")) {
+      const blob = await response.blob()
+      const videoUrl = URL.createObjectURL(blob)
+      const video = document.createElement("video")
+      video.src = videoUrl
+      video.controls = true
+      video.className = "response-video w-100 rounded shadow-sm fade-in"
+      video.style.maxHeight = "400px"
+      video.preload = "metadata"
+
+      DOM.modal.content.appendChild(video)
+
+      let downloadVideoBtn = DOM.modal.element.querySelector(".download-video-btn")
+      if (!downloadVideoBtn) {
+        downloadVideoBtn = document.createElement("a")
+        downloadVideoBtn.className = "btn btn-success me-2 download-video-btn"
+        downloadVideoBtn.innerHTML = '<i class="fas fa-download me-2"></i> Download Video'
+        downloadVideoBtn.style.textDecoration = "none"
+
+        const modalFooter = DOM.modal.element.querySelector(".modal-footer")
+        modalFooter.insertBefore(downloadVideoBtn, DOM.modal.submitBtn)
+      }
+
+      downloadVideoBtn.href = videoUrl
+      downloadVideoBtn.download = `${(apiName || 'download').toLowerCase().replace(/\s+/g, "-")}.${blob.type.split("/")[1] || "mp4"}`
+      downloadVideoBtn.style.display = "inline-block"
+    } else {
+      try {
+        const data = await response.json()
+        const formattedJson = syntaxHighlightJson(JSON.stringify(data, null, 2))
+        DOM.modal.content.innerHTML = formattedJson
+        if (JSON.stringify(data, null, 2).split("\n").length > 20) {
+          addCodeFolding(DOM.modal.content)
+        }
+      } catch (err) {
+        const textData = await response.text()
+        DOM.modal.content.textContent = textData || "Response has no content or unknown format."
+      }
+    }
+  }
+
+  // POST submission handler
+  async function handleSubmitPost(e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!currentApiData) return
+
+    // validate
+    if (!validateRequiredInputs()) {
+      let alertEl = DOM.modal.queryInputContainer.querySelector('.post-validation-alert')
+      if (!alertEl) {
+        alertEl = document.createElement('div')
+        alertEl.className = 'alert alert-danger post-validation-alert mt-2'
+        alertEl.setAttribute('role', 'alert')
+        DOM.modal.queryInputContainer.appendChild(alertEl)
+      }
+      alertEl.textContent = 'Please fill in all required fields before POSTing.'
+      return
+    } else {
+      const existing = DOM.modal.queryInputContainer.querySelector('.post-validation-alert')
+      if (existing) existing.remove()
+    }
+
+    const endpoint = DOM.modal.endpoint && DOM.modal.endpoint.textContent ? DOM.modal.endpoint.textContent.trim() : null
+    if (!endpoint) {
+      showToast('No endpoint found to POST to.', 'error')
+      return
+    }
+
+    // show loading state
+    if (DOM.modal.spinner) DOM.modal.spinner.classList.remove("d-none")
+    if (DOM.modal.container) DOM.modal.container.classList.add("d-none")
+    if (DOM.modal.content) {
+      DOM.modal.content.classList.add("d-none")
+      DOM.modal.content.innerHTML = ""
+    }
+    if (DOM.modal.postBtn) {
+      DOM.modal.postBtn.disabled = true
+      DOM.modal.postBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Uploading...'
+    }
+
+    try {
+      const formData = buildFormDataFromInputs()
+
+      // Send POST
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 60000)
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: formData,
+        signal: controller.signal,
+      })
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        // try to get json/text error
+        let errText = response.statusText
+        try {
+          const errData = await response.json()
+          errText = errData.message || JSON.stringify(errData)
+        } catch (ignore) {
+          try {
+            errText = await response.text()
+          } catch (ignore2) {}
+        }
+        throw new Error(`HTTP ${response.status} — ${errText}`)
+      }
+
+      await displayFetchResponse(response, currentApiData.name)
+      showToast(`POST request successful for ${currentApiData.name}`, "success", "Request Success")
+    } catch (err) {
+      DOM.modal.container.classList.remove("d-none")
+      if (DOM.modal.content) {
+        DOM.modal.content.classList.remove("d-none")
+        DOM.modal.content.textContent = `Error: ${err.message || err}`
+      }
+      console.error('POST error:', err)
+      showToast(`API POST failed: ${err.message || err}`, "error", "Request Failed")
+    } finally {
+      if (DOM.modal.spinner) DOM.modal.spinner.classList.add("d-none")
+      if (DOM.modal.postBtn) {
+        DOM.modal.postBtn.disabled = false
+        DOM.modal.postBtn.innerHTML = '<span>POST</span><i class="fas fa-upload ms-2" aria-hidden="true"></i>'
+      }
+    }
   }
 
   const handleApiRequest = async (apiUrl, apiName) => {
