@@ -1,4 +1,3 @@
-
 {
   "name": "Veron Api'S",
   "version": "v1.0.2",
@@ -47,51 +46,14 @@
         },
         {
           "name": "To Figure",
-          "desc": "Convert images to figurine style",
+          "desc": "Convert images to figurine style using AI",
           "path": "/ai/tofigure?imageUrl=",
-          "status": "error",
+          "status": "ready",
           "params": {
-            "imageUrl": "Image URL"
-          }
-        },
-        {
-          "name": "Pixel Art",
-          "desc": "Convert images to pixel art",
-          "path": "/ai/pixelart?imageUrl=",
-          "status": "error",
-          "params": {
-            "imageUrl": "Image URL",
-            "ratio": "1:1, 3:2, or 2:3"
-          }
-        },
-        {
-          "name": "Image Editor",
-          "desc": "Edit images with AI",
-          "path": "/ai/imageedit",
-          "status": "error",
-          "params": {
-            "imageData": "Base64 image",
-            "prompt": "Edit instructions"
-          }
-        },
-        {
-          "name": "Ghibli Style",
-          "desc": "Convert images to Ghibli style",
-          "path": "/ai/ghibli?imageUrl=",
-          "status": "error",
-          "params": {
-            "imageUrl": "Image URL"
-          }
-        },
-        {
-          "name": "Image Upscale",
-          "desc": "Upscale image quality",
-          "path": "/ai/upscale?imageUrl=",
-          "status": "error",
-          "params": {
-            "imageUrl": "Image URL",
-            "scale": "2 or 4"
-          }
+            "imageUrl": "Image URL to convert",
+            "prompt": "Optional custom prompt (uses default if not provided)"
+          },
+          "innerDesc": "Transform any image into a realistic figurine style using advanced AI. The default prompt creates a 1/7 scale commercial figurine with professional packaging and modeling details."
         },
         {
           "name": "WebPilot AI",
@@ -110,31 +72,12 @@
           "params": {
             "query": "Your query"
           }
-        },
-        {
-          "name": "GPT-4o",
-          "desc": "OpenAI GPT-4o model",
-          "path": "/ai/gpt4o?query=",
-          "status": "ready",
-          "params": {
-            "query": "Your question"
-          }
         }
       ]
     },
     {
       "name": "Search",
       "items": [
-        {
-          "name": "Apple Music Search",
-          "desc": "Search Apple Music",
-          "path": "/search/applemusic?query=",
-          "status": "error",
-          "params": {
-            "query": "Search query",
-            "region": "Region code"
-          }
-        },
         {
           "name": "YouTube Search",
           "desc": "Search YouTube videos",
@@ -285,6 +228,26 @@
     {
       "name": "Tools",
       "items": [
+        {
+          "name": "Photo Enhancer",
+          "desc": "Enhance image quality using AI",
+          "path": "/tools/enhancer",
+          "status": "ready",
+          "params": {
+            "image": "Image file (POST) or imageUrl (GET)"
+          },
+          "innerDesc": "This tool uses AI to enhance image quality, improve resolution, and fix common image issues. Supports both file upload (POST) and URL (GET) methods."
+        },
+        {
+          "name": "Watermark Remover",
+          "desc": "Remove text watermarks from images using AI",
+          "path": "/tools/remover?imageUrl=",
+          "status": "ready",
+          "params": {
+            "imageUrl": "URL of the image with watermark"
+          },
+          "innerDesc": "This tool uses AI to automatically detect and remove text watermarks from images. Simply provide the URL of the image you want to process."
+        },
         {
           "name": "Speed Test",
           "desc": "Test internet speed",
