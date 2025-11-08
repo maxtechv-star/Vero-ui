@@ -48,7 +48,7 @@
           "name": "To Figure",
           "desc": "Convert images to figurine style using AI",
           "path": "/ai/tofigure?imageUrl=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "imageUrl": "Image URL to convert",
             "prompt": "Optional custom prompt (uses default if not provided)"
@@ -59,7 +59,7 @@
           "name": "WebPilot AI",
           "desc": "AI web search assistant",
           "path": "/ai/webpilot?query=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "query": "Search query"
           }
@@ -68,7 +68,7 @@
           "name": "WormGPT",
           "desc": "Unfiltered AI assistant",
           "path": "/ai/wormgpt?query=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "query": "Your query"
           }
@@ -232,7 +232,7 @@
           "name": "Photo Enhancer",
           "desc": "Enhance image quality using AI",
           "path": "/tools/enhancer",
-          "status": "ready",
+          "status": "error",
           "params": {
             "image": "Image file (POST) or imageUrl (GET)"
           },
@@ -242,7 +242,7 @@
           "name": "Watermark Remover",
           "desc": "Remove text watermarks from images using AI",
           "path": "/tools/remover?imageUrl=",
-          "status": "ready",
+          "status": "error",
           "params": {
             "imageUrl": "URL of the image with watermark"
           },
