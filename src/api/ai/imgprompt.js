@@ -1,3 +1,4 @@
+
 import axios from "axios"
 import FormData from "form-data"
 
@@ -60,9 +61,7 @@ export default function imgPromptRoute(app) {
 
       res.json({
         status: true,
-        prompt: prompt,
-        source: "neuralframes.com",
-        message: "Successfully generated prompt from image"
+        prompt: prompt
       })
 
     } catch (error) {
@@ -139,9 +138,7 @@ export default function imgPromptRoute(app) {
 
       res.json({
         status: true,
-        prompt: prompt,
-        source: "neuralframes.com",
-        message: "Successfully generated prompt from image"
+        prompt: prompt
       })
 
     } catch (error) {
