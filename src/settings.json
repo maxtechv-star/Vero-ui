@@ -101,6 +101,14 @@
     {
       "name": "Downloader",
       "items": [
+       {
+          "name": "MediaFire Downloader",
+          "desc": "Get direct download links from MediaFire",
+          "path": "/downloader/mediafire?url=",
+          "status": "ready",
+          "params": {
+            "url": "MediaFire file URL"
+          },
         {
           "name": "YouTube Audio",
           "desc": "Download YouTube as MP3 audio",
